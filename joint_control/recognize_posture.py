@@ -28,8 +28,8 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         self.prev_post = 'unknown'
         self.posture = 'unknown'
 
-        # ROBOT_POSE_CLF = 'robot_pose.pkl'
-        # self.posture_classifier = pickle.load(open(ROBOT_POSE_CLF, "rb"))
+        ROBOT_POSE_CLF = 'robot_pose.pkl'
+        self.posture_classifier = pickle.load(open(ROBOT_POSE_CLF, "rb"))
         self.classes = ['Knee', 'Stand', 'HeadBack', 'Frog', 'Crouch', 'Sit', 'Left', 'Back', 'Right', 'StandInit', 'Belly']
 
     def think(self, perception):
@@ -53,9 +53,9 @@ class PostureRecognitionAgent(AngleInterpolationAgent):
         features.append(perception.imu[0])
         features.append(perception.imu[1])
 
-        # posture_id = self.posture_classifier.predict([features])[0]
+        posture_id = self.posture_classifier.predict([features])[0]
 
-        return self.classes[0]
+        return self.classes[posture_id]
 
 if __name__ == '__main__':
     agent = PostureRecognitionAgent()

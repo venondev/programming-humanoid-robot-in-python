@@ -84,19 +84,24 @@ class ServerAgent(InverseKinematicsAgent):
         self.motion_finished = False
         while (not self.motion_finished):
             sleep(0.5)
-        return
 
     def get_transform(self, name):
         '''get transform with given name
         '''
         # YOUR CODE HERE
-        self.transforms[name]
+        l = self.transforms[name]
+        if isinstance(l, np.ndarray):
+            l = l.tolist()
 
+        return l
     def set_transform(self, effector_name, transform):
         '''solve the inverse kinematics and control joints use the results
         '''
         # YOUR CODE HERE
         self.set_transforms(effector_name, np.array(transform))
+        self.motion_finished = False
+        while (not self.motion_finished):
+            sleep(0.5)
 
 if __name__ == '__main__':
     agent = ServerAgent()

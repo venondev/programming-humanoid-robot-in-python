@@ -11,6 +11,7 @@ import threading
 import requests
 import weakref
 from keyframes import hello, wipe_forehead, leftBackToStand
+import numpy as np
 
 from sympy import arg
 
@@ -29,11 +30,10 @@ class PostHandler(object):
     def set_transform(self, effector_name, transform):
         '''non-blocking call of ClientAgent.set_transform'''
         # YOUR CODE HERE
-        thread = threading.Thread(target=self.proxy.set_transform, args=([effector_name, transform],))
+        thread = threading.Thread(target=self.proxy.set_transform, args=(effector_name, transform))
         thread.start()
 
 class RPCRequest():
-
     def __init__(self, host) -> None:
         self.host = host
 
@@ -78,20 +78,23 @@ class ClientAgent(object):
         e.g. return until keyframes are executed
         '''
         # YOUR CODE HERE
-        print("Called")
         self.rpc.execute_keyframes(keyframes)
 
     def get_transform(self, name):
         '''get transform with given name
         '''
         # YOUR CODE HERE
-        return self.rpc.get_transform(name)
+        return np.array(self.rpc.get_transform(name))
 
     def set_transform(self, effector_name, transform):
         '''solve the inverse kinematics and control joints use the results
         '''
         # YOUR CODE HERE
-        return self.rpc.set_transform(effector_name, transform)
+        l = transform
+        if isinstance(l, np.ndarray):
+            l = l.tolist()
+
+        return self.rpc.set_transform(effector_name, l)
 
 if __name__ == '__main__':
     # agent = ClientAgent()
@@ -99,8 +102,15 @@ if __name__ == '__main__':
 
     a = ClientAgent()
 
-    print("Start")
-    print(a.post.execute_keyframes(hello()))
-    print("Finished")
+    # print("Start")
+    # print(a.post.execute_keyframes(hello()))
+    # print("Finished")
+
+    # T = np.identity(4)
+    # T[-1, 1] = 0.05
+    # T[-1, 2] = -0.26
+    # a.post.set_transform('LLeg', T)
+
+    print(a.get_transform("LElbowRoll"))
 
 
