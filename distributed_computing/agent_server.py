@@ -81,6 +81,7 @@ class ServerAgent(InverseKinematicsAgent):
         # YOUR CODE HERE
         self.keyframes = keyframes
         self.is_init = True
+        self.motion_finished = False
         while (not self.motion_finished):
             sleep(0.5)
         return

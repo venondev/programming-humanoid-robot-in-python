@@ -10,6 +10,9 @@ from concurrent.futures import thread
 import threading
 import requests
 import weakref
+from keyframes import hello, wipe_forehead, leftBackToStand
+
+from sympy import arg
 
 class PostHandler(object):
     ''' the post hander wraps function to be executed in parallel
@@ -20,10 +23,14 @@ class PostHandler(object):
     def execute_keyframes(self, keyframes):
         '''non-blocking call of ClientAgent.execute_keyframes'''
         # YOUR CODE HERE
+        thread = threading.Thread(target=self.proxy.execute_keyframes, args=(keyframes,))
+        thread.start()
 
     def set_transform(self, effector_name, transform):
         '''non-blocking call of ClientAgent.set_transform'''
         # YOUR CODE HERE
+        thread = threading.Thread(target=self.proxy.set_transform, args=([effector_name, transform],))
+        thread.start()
 
 class RPCRequest():
 
@@ -71,6 +78,7 @@ class ClientAgent(object):
         e.g. return until keyframes are executed
         '''
         # YOUR CODE HERE
+        print("Called")
         self.rpc.execute_keyframes(keyframes)
 
     def get_transform(self, name):
@@ -89,7 +97,10 @@ if __name__ == '__main__':
     # agent = ClientAgent()
     # # TEST CODE HERE
 
-    rpc = RPCRequest("http://localhost:4000")
-    print(rpc.get_angle("HeadYaw"))
+    a = ClientAgent()
+
+    print("Start")
+    print(a.post.execute_keyframes(hello()))
+    print("Finished")
 
 
